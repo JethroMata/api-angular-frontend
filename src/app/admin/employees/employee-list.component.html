@@ -1,0 +1,81 @@
+<div class="top-nav-bar">
+  <span class="app-title"></span>
+  <nav>
+    <a routerLink="/admin/accounts">Accounts</a>
+    <a routerLink="/admin/employees">Employees</a>
+    <a routerLink="/admin/departments">Departments</a>
+    <a routerLink="/admin/requests">Requests</a>
+  </nav>
+</div>
+
+<div class="content-wrapper">
+  <div class="card employee-list-card">
+    <h2>EMPLOYEES</h2>
+
+    <div *ngIf="loading" class="text-center p-5">Loading employee data...</div>
+
+    <div *ngIf="!loading">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Employee ID</th>
+            <th>Account</th>
+            <th>Position</th>
+            <th>Department</th>
+            <th>Hire Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees">
+            <td>{{ employee.EmployeeID }}</td>
+            <td>{{ employee.Account?.email }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.Department?.departmentName }}</td>
+            <td>{{ formatDate(employee.hireDate) }}</td>
+            <td>
+              <span
+                class="status-badge"
+                [class.status-active]="employee.status === 'active'">
+                {{ employee.status }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-primary me-1" (click)="viewRequests(employee)">Requests</button>
+              <button class="btn btn-sm btn-info me-1" (click)="viewWorkflows(employee)">Workflows</button>
+              <button class="btn btn-sm btn-warning me-1" (click)="openTransferModal(employee)">Transfer</button>
+              <button class="btn btn-sm btn-success" (click)="editEmployee(employee)">Edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-end mt-3">
+        <button class="btn btn-primary" (click)="addEmployee()">Add Employee</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Transfer Modal -->
+<div class="modal fade" id="transferModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transfer Employee: {{ selectedEmployee?.EmployeeID }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <label>Select New Department</label>
+        <select class="form-select" [(ngModel)]="newDepartmentId" name="newDepartment">
+          <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.departmentName }}</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="transferEmployee()">Transfer</button>
+      </div>
+    </div>
+  </div>
+</div>

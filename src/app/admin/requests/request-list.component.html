@@ -1,0 +1,59 @@
+<div class="app-header">
+  <nav>
+    <a routerLink="/admin/accounts">Accounts</a>
+    <a routerLink="/admin/employees">Employees</a>
+    <a routerLink="/admin/departments">Departments</a>
+    <a routerLink="/admin/requests">Requests</a>
+  </nav>
+</div>
+
+<div class="content-wrapper">
+  <div class="list-container">
+    <h2>REQUESTS</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Employee</th>
+          <th>Type</th>
+          <th>Items</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let req of requests">
+          <td>{{ req.requestId }}</td>
+          <td>{{ req.Account?.email }}</td>
+          <td>{{ req.type }}</td>
+          <td>{{ req.items }}</td>
+          <td>{{ req.quantity }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="{
+              'status-pending': req.status === 'pending',
+              'status-approved': req.status === 'approved',
+              'status-rejected': req.status === 'rejected'
+            }">
+              {{ req.status }}
+            </span>
+          </td>
+          <td>{{ req.created | date:'M/d/yyyy, h:mm a' }}</td>
+          <td class="action-cell">
+            <a [routerLink]="['/admin/requests/edit', req.requestId]" class="btn action-btn btn-edit">Edit</a>
+            <button class="btn action-btn btn-delete" (click)="deleteRequest(req.requestId)">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="requests.length === 0">
+          <td colspan="8" class="text-center">No requests found.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="add-button-row">
+      <a routerLink="/admin/requests/add" class="btn btn-primary add-button">Add Request</a>
+    </div>
+  </div>
+</div>

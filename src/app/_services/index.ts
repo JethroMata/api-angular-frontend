@@ -1,2 +1,5 @@
-﻿export * from './account.service';
+﻿// src/app/_services/index.ts
+export * from './account.service';
 export * from './alert.service';
+export * from './department.service'; 
+export * from './employee.service';  

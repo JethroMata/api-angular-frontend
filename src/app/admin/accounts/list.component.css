@@ -1,0 +1,137 @@
+/* --- Global Page and Header Layout --- */
+.app-header {
+  /* Using your .top-nav-bar styles */
+  display: flex;
+  justify-content: flex-end; /* Align links to the right as shown in prototypes */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+.app-header nav a {
+  /* Using your nav a styles */
+  margin-left: 15px;
+  text-decoration: none;
+  color: #555;
+  font-size: 0.9rem;
+}
+.app-header nav a:hover {
+  color: #007bff;
+}
+
+/* --- Content Wrapper and Card --- */
+.content-wrapper {
+  /* Using your content-wrapper styles */
+  padding: 20px;
+  background-color: #f4f4f4; /* Light gray background */
+  min-height: 100vh;
+}
+.list-container {
+  /* Renamed to list-container for requests, but using your .employee-list-card styles */
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.list-container h2 {
+  /* Using your h2 styles */
+  margin-top: 0;
+  padding-bottom: 5px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* --- Table Structure --- */
+.data-table {
+  /* Using your table styles */
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+.data-table thead {
+  border-bottom: 1px solid #e0e0e0;
+}
+.data-table th, .data-table td {
+  /* Using your th/td padding and font size */
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+.data-table th {
+  font-weight: 600;
+  color: #555;
+}
+.data-table tbody tr {
+    transition: background-color 0.1s ease;
+}
+.data-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* --- Status Badge Styling --- */
+.status-badge {
+  /* Using your status-badge styles */
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.status-pending {
+  background-color: #ffc107; /* Yellow/Warning */
+  color: #333;
+}
+.status-approved {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+.status-rejected {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+
+/* --- Action Buttons Styling (Edit/Delete) --- */
+.action-cell {
+  white-space: nowrap;
+}
+.action-btn {
+  /* Combining your action-buttons-cell button styles */
+  margin-right: 5px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.action-btn:last-child {
+  margin-right: 0;
+}
+
+/* Specific request button colors */
+.btn-edit { background-color: #007bff; }
+.btn-delete { background-color: #dc3545; }
+
+/* --- Add Request Button --- */
+.add-button-row {
+  /* Using your .add-button-container styles */
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+}
+.add-button {
+  /* Renamed to .add-button, but using your .btn-add-employee styles */
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

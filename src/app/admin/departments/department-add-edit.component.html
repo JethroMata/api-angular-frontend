@@ -1,0 +1,25 @@
+<div class="card mt-3">
+  <div class="card-header">
+    <h5>{{ isAddMode ? 'Add Department' : 'Edit Department' }}</h5>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label>Department Name</label>
+        <input type="text" formControlName="departmentName" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label>Description</label>
+        <textarea formControlName="description" class="form-control"></textarea>
+      </div>
+
+      <div>
+        <button [disabled]="loading" class="btn btn-primary me-2">
+          {{ isAddMode ? 'Save' : 'Update' }}
+        </button>
+        <a routerLink="/admin/departments" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>

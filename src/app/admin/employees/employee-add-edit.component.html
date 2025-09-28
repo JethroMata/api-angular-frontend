@@ -1,0 +1,52 @@
+<div class="card mt-3">
+  <div class="card-header">
+    <h5>{{ isAddMode ? 'Add Employee' : 'Edit Employee' }}</h5>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      
+      <div class="mb-3">
+        <label>Account</label>
+        <select formControlName="accountId" class="form-select">
+          <option *ngFor="let acc of accounts" [value]="acc.id">
+            {{ acc.email }} ({{ acc.firstName }} {{ acc.lastName }})
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label>Position</label>
+        <input type="text" formControlName="position" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label>Department</label>
+        <select formControlName="departmentId" class="form-select">
+          <option *ngFor="let dept of departments" [value]="dept.id">
+            {{ dept.departmentName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label>Hire Date</label>
+        <input type="date" formControlName="hireDate" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label>Status</label>
+        <select formControlName="status" class="form-select">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <div>
+        <button [disabled]="loading" class="btn btn-primary me-2">
+          {{ isAddMode ? 'Save' : 'Update' }}
+        </button>
+        <a routerLink="/admin/employees" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>

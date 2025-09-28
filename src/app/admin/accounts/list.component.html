@@ -1,32 +1,58 @@
-﻿<h1>Accounts</h1>
-<p>All accounts from secure (admin only) api end point:</p>
-<a routerLink="add" class="btn btn-sm btn-success mb-2">Create Account</a>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th style="width:30%">Name</th>
-            <th style="width:30%">Email</th>
-            <th style="width:30%">Role</th>
-            <th style="width:10%"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let account of accounts">
-            <td class="align-middle">{{account.title}} {{account.firstName}} {{account.lastName}}</td>
-            <td class="align-middle">{{account.email}}</td>
-            <td class="align-middle">{{account.role}}</td>
-            <td style="white-space: nowrap">
-                <a routerLink="edit/{{account.id}}" class="btn btn-sm btn-primary me-1">Edit</a>
-                <button (click)="deleteAccount(account.id)" class="btn btn-sm btn-danger btn-delete-account" [disabled]="account.isDeleting">
-                    <span *ngIf="account.isDeleting" class="spinner-border spinner-border-sm"></span>
-                    <span *ngIf="!account.isDeleting">Delete</span>
-                </button>
-            </td>
-        </tr>
-        <tr *ngIf="!accounts">
-            <td colspan="4" class="text-center">
-                <span class="spinner-border spinner-border-lg align-center"></span>
-            </td>
-        </tr>
-    </tbody>
-</table>
+﻿<div class="app-header">
+  <nav>
+    <a routerLink="/admin/accounts">Accounts</a>
+    <a routerLink="/admin/employees">Employees</a>
+    <a routerLink="/admin/departments">Departments</a>
+    <a routerLink="/admin/requests">Requests</a>
+  </nav>
+</div>
+
+<div class="content-wrapper">
+  
+  <div class="list-container">
+    <h2>ACCOUNTS</h2>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th class="action-cell">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let account of accounts">
+                <td>{{account.title}}</td> 
+                <td>{{account.firstName}}</td>
+                <td>{{account.lastName}}</td>
+                <td>{{account.email}}</td>
+                <td>{{account.role}}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{
+                      'status-active': account.status === 'ACTIVE',
+                      'status-inactive': account.status !== 'ACTIVE'
+                  }">
+                    {{account.status | uppercase}}
+                  </span>
+                </td>
+                <td class="action-cell">
+                    <a routerLink="edit/{{account.id}}" class="btn action-btn btn-edit">Edit</a>
+                </td>
+            </tr>
+            <tr *ngIf="!accounts">
+                <td colspan="7" class="text-center">
+                    <span class="spinner-border spinner-border-lg align-center"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="add-button-row">
+      <a routerLink="add" class="btn add-button">Create Account</a>
+    </div>
+  </div>
+</div>

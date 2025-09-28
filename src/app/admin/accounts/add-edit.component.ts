@@ -15,6 +15,9 @@ export class AddEditComponent implements OnInit {
     submitting = false;
     submitted = false;
 
+    // 🔥 Added: status options
+    statuses = ['active', 'inactive'];
+
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -32,6 +35,7 @@ export class AddEditComponent implements OnInit {
             lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             role: ['', Validators.required],
+            status: ['active', Validators.required],   // 🔥 Added: status field (default active)
             // password only required in add mode
             password: ['', [Validators.minLength(6), ...(!this.id ? [Validators.required] : [])]],
             confirmPassword: ['']

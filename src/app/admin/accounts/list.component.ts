@@ -1,9 +1,13 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { first } from 'rxjs/operators';
 
 import { AccountService } from '@app/_services';
 
-@Component({ templateUrl: 'list.component.html' })
+@Component({ 
+    templateUrl: 'list.component.html', 
+    styleUrls: ['./list.component.css'], // <-- Corrected syntax for styleUrls
+    encapsulation: ViewEncapsulation.None // <-- ADDED to ensure header/background styles work
+})
 export class ListComponent implements OnInit {
     accounts?: any[];
 
