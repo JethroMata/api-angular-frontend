@@ -5,16 +5,28 @@
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <!-- Employee Dropdown -->
-      <div class="mb-3">
-        <label for="employee">Employee</label>
-        <select formControlName="employeeId" id="employee" class="form-select">
-          <option value="">Select Employee</option>
-          <option *ngFor="let emp of employees" [value]="emp.EmployeeID">
-            {{ emp.EmployeeID }} - {{ emp.Account?.email }}
-          </option>
-        </select>
-      </div>
+     <!-- Employee Field -->
+<div class="mb-3">
+  <label for="employee">Employee</label>
+
+  <!-- Add Mode: show dropdown -->
+  <select *ngIf="isAddMode" formControlName="employeeId" id="employee" class="form-select">
+    <option value="">Select Employee</option>
+    <option *ngFor="let emp of employees" [value]="emp.EmployeeID">
+      {{ emp.Account?.email }}
+    </option>
+  </select>
+
+  <!-- Edit Mode: show email only -->
+  <input 
+    *ngIf="!isAddMode && employees.length > 0" 
+    type="text" 
+    class="form-control" 
+    [value]="getEmployeeEmail()" 
+    readonly 
+  />
+</div>
+
 
       <!-- Type Dropdown -->
       <div class="mb-3">

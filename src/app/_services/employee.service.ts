@@ -37,4 +37,9 @@ export class EmployeeService {
   transfer(EmployeeID: string, toDeptId: number): Observable<any> {
     return this.http.post(`${baseUrl}/${EmployeeID}/transfer`, { toDeptId });
   }
+
+  // ---------- WORKFLOW ----------
+  getWorkflow(employeeId: string | number) {
+    return this.http.get<any[]>(`${environment.apiUrl}/employee-workflows/${employeeId}`);
+}
 }

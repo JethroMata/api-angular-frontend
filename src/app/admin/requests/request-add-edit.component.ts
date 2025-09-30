@@ -30,6 +30,13 @@ export class RequestAddEditComponent implements OnInit {
     private employeeService: EmployeeService
   ) {}
 
+  getEmployeeEmail(): string {
+  if (!this.employees || this.employees.length === 0) return '';
+  const emp = this.employees.find(e => e.EmployeeID === this.form.value.employeeId);
+  return emp?.Account?.email || '';
+}
+
+
   ngOnInit(): void {
     this.id = +this.route.snapshot.params['id'];
     this.isAddMode = !this.id;

@@ -61,8 +61,9 @@ export class EmployeeListComponent implements OnInit {
   }
 
   viewWorkflows(emp: Employee) {
-    console.log(`View workflows for ${emp.EmployeeID}`);
-  }
+  this.router.navigate(['/admin/employees', emp.EmployeeID, 'workflow']);
+}
+
 
   editEmployee(emp: Employee) {
     this.router.navigate(['/admin/employees/edit', emp.EmployeeID]);
