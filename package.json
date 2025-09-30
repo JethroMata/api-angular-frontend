@@ -2,14 +2,15 @@
     "name": "angular-15-example",
     "version": "0.0.0",
     "scripts": {
-    "ng": "ng",
-    "start": "ng serve --open",
-    "build": "ng build --prod",
-    "vercel-build": "ng build --prod",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "export:all": "folder2txt --output FrontEnd1.txt C:/Users/Y PC/JAVA/F-B angular/Trial-repo_F"
+  "ng": "ng",
+  "start": "ng serve --open",
+  "build": "ng build --configuration production",
+  "vercel-build": "ng build --configuration production",
+  "watch": "ng build --watch --configuration development",
+  "test": "ng test",
+  "export:all": "folder2txt --output FrontEnd1.txt C:/Users/Y PC/JAVA/F-B angular/Trial-repo_F"
 },
+
     "private": true,
     "dependencies": {
         "@angular/animations": "^15.0.0",
