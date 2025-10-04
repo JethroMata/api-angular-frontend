@@ -12,11 +12,11 @@ const routes: Routes = [
     //component: LayoutComponent,
     children: [
       { path: '', component: OverviewComponent },
-      {
-        path: 'accounts',
-        loadChildren: () =>
-          import('./accounts/accounts.module').then(m => m.AccountsModule),
-      },
+      // {
+      //   path: 'accounts',
+      //   loadChildren: () =>
+      //     import('./accounts/accounts.module').then(m => m.AccountsModule),
+      // },
       {
         path: 'employees',
         loadChildren: () =>
@@ -34,6 +34,11 @@ const routes: Routes = [
       }
     ],
   },
+  {
+        path: 'accounts',
+        loadChildren: () =>
+          import('./accounts/accounts.module').then(m => m.AccountsModule),
+      },
 ];
 
 @NgModule({

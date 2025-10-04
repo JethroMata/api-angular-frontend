@@ -32,18 +32,25 @@ export class EmployeeListComponent implements OnInit {
   }
 
   loadEmployees(): void {
-    this.loading = true;
-    this.employeeService.getAll().subscribe({
-      next: (data: Employee[]) => {
-        this.employees = data;
-        this.loading = false;
-      },
-      error: (err: any) => {
-        console.error('Failed to load employees', err);
-        this.loading = false;
-      }
-    });
-  }
+  this.loading = true;
+  this.employeeService.getAll().subscribe({
+    next: (data: Employee[]) => {
+      // ✅ Sort ascending by Employee ID number (EMP001, EMP002, etc.)
+      this.employees = data.sort((a, b) => {
+        const numA = parseInt(a.EmployeeID.replace(/\D/g, ''), 10);
+        const numB = parseInt(b.EmployeeID.replace(/\D/g, ''), 10);
+        return numA - numB; // ascending order
+      });
+
+      this.loading = false;
+    },
+    error: (err: any) => {
+      console.error('Failed to load employees', err);
+      this.loading = false;
+    }
+  });
+}
+
 
   loadDepartments(): void {
     this.departmentService.getAll().subscribe({

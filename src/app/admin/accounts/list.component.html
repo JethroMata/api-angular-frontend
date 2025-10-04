@@ -1,16 +1,11 @@
-﻿<div class="app-header">
-  <nav>
-    <a routerLink="/admin/accounts">Accounts</a>
-    <a routerLink="/admin/employees">Employees</a>
-    <a routerLink="/admin/departments">Departments</a>
-    <a routerLink="/admin/requests">Requests</a>
-  </nav>
-</div>
-
-<div class="content-wrapper">
+﻿<div class="content-wrapper">
   
   <div class="list-container">
     <h2>ACCOUNTS</h2>
+
+    <div class="header-row">
+      <a routerLink="add" class="btn add-button">Create Account</a>
+    </div>
 
     <table class="data-table">
         <thead>
@@ -32,11 +27,12 @@
                 <td>{{account.email}}</td>
                 <td>{{account.role}}</td>
                 <td>
-                  <span class="status-badge" [ngClass]="{
-                      'status-active': account.status === 'ACTIVE',
-                      'status-inactive': account.status !== 'ACTIVE'
-                  }">
-                    {{account.status | uppercase}}
+                  <span class="status-badge"
+                                [ngClass]="{
+                      'status-active': account.status.toUpperCase() === 'ACTIVE',
+                       'status-inactive': account.status.toUpperCase() !== 'ACTIVE'
+                            }">
+                                 {{ account.status }}
                   </span>
                 </td>
                 <td class="action-cell">
@@ -51,8 +47,6 @@
         </tbody>
     </table>
 
-    <div class="add-button-row">
-      <a routerLink="add" class="btn add-button">Create Account</a>
-    </div>
+    
   </div>
 </div>

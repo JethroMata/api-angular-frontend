@@ -1,10 +1,11 @@
 ﻿import { Component } from '@angular/core';
-
 import { AccountService } from '@app/_services';
 
 @Component({ templateUrl: 'home.component.html' })
 export class HomeComponent {
-    account = this.accountService.accountValue;
+  constructor(private accountService: AccountService) {}
 
-    constructor(private accountService: AccountService) { }
+  get account() {
+    return this.accountService.accountValue; // ✅ no early access
+  }
 }

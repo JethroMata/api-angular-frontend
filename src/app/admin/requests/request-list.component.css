@@ -137,3 +137,46 @@
   background-color: #dc3545; /* Red - FOR INACTIVE */
   color: white;
 }
+
+.status-pending {
+  background-color: rgb(249, 164, 17); /* yellow */ 
+  color: white;
+}
+
+/* --- Table Structure --- */
+.data-table {
+  width: 100%;
+  border-collapse: separate;   /* Important for rounded corners */
+  border-spacing: 0;           /* Remove gaps */
+  margin-top: 15px;
+  border-radius: 8px;          /* Rounded edges */
+  overflow: hidden;            /* Ensures corners stay rounded */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Table shadow */
+}
+
+.data-table thead {
+  background-color: #000;  /* Black header */
+}
+
+.data-table th {
+  font-weight: 600;
+  color: #fff;             /* White text in header */
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.data-table td {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.data-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f9f9f9;
+}

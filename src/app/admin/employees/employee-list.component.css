@@ -76,7 +76,7 @@ tbody tr:hover {
   text-transform: uppercase;
 }
 .status-active {
-  background-color: #00ff22; /* Green */
+  background-color: #24b637; /* Green */
   color: white;
 }
 .status-inactive {
@@ -122,3 +122,74 @@ tbody tr:hover {
   font-weight: 500;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+/* --- Table Structure (Updated to Card Style) --- */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px; /* space between rows for card effect */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 18px;
+  background-color: transparent; /* keep rows as "cards" */
+}
+
+/* --- Table Header --- */
+th {
+  font-weight: 700; /* bold */
+  color: #ffffff;   /* white text */
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 14px 18px;
+  background-color: #000000; /* black background */
+  border-bottom: 2px solid #e5e7eb;
+}
+
+
+/* --- Table Rows as Cards --- */
+tbody tr {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+tbody tr:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* --- Table Cells --- */
+td {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+  padding: 14px 18px;
+}
+
+/* --- Table with Rounded Edges --- */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px; /* keep the card style spacing */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 18px;
+  border-radius: 12px; /* round table edges */
+  overflow: hidden;    /* ensures corners are rounded */
+}
+
+/* --- Table Header with Rounded Top --- */
+thead tr:first-child th:first-child {
+  border-top-left-radius: 12px;
+}
+thead tr:first-child th:last-child {
+  border-top-right-radius: 12px;
+}
+
+/* --- Table Rows with Rounded Bottom --- */
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
