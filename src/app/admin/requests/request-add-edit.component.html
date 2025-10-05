@@ -1,34 +1,33 @@
-<div class="p-4 mt-3">
+<div class="card mt-3">
   <div class="card-header">
     <h5>{{ isAddMode ? 'Add Request' : 'Edit Request' }}</h5>
   </div>
   <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-     <!-- Employee Field -->
-<div class="mb-3">
-  <label for="employee">Employee</label>
+      <!-- Employee Email (readonly in edit mode, dropdown in add mode) -->
+      <div class="mb-3">
+        <label for="employee">Employee</label>
 
-  <!-- Add Mode: show dropdown -->
-  <select *ngIf="isAddMode" formControlName="employeeId" id="employee" class="form-select">
-    <option value="">Select Employee</option>
-    <option *ngFor="let emp of employees" [value]="emp.EmployeeID">
-      {{ emp.Account?.email }}
-    </option>
-  </select>
+        <!-- Add Mode -->
+        <select *ngIf="isAddMode" formControlName="employeeId" id="employee" class="form-select">
+          <option value="">Select Employee</option>
+          <option *ngFor="let emp of employees" [value]="emp.Account?.id">
+            {{ emp.Account?.email }}
+          </option>
+        </select>
 
-  <!-- Edit Mode: show email only -->
-  <input 
-    *ngIf="!isAddMode && employees.length > 0" 
-    type="text" 
-    class="form-control" 
-    [value]="getEmployeeEmail()" 
-    readonly 
-  />
-</div>
+        <!-- Edit Mode -->
+        <input 
+          *ngIf="!isAddMode"
+          type="text"
+          class="form-control"
+          [value]="employeeEmail"
+          readonly
+        />
+      </div>
 
-
-      <!-- Type Dropdown -->
+      <!-- Type -->
       <div class="mb-3">
         <label for="type">Type</label>
         <select formControlName="type" id="type" class="form-select">
@@ -39,7 +38,7 @@
         </select>
       </div>
 
-      <!-- Status Dropdown (Edit Mode Only) -->
+      <!-- Status (only edit mode) -->
       <div class="mb-3" *ngIf="!isAddMode">
         <label for="status">Status</label>
         <select formControlName="status" id="status" class="form-select">
@@ -49,7 +48,7 @@
         </select>
       </div>
 
-      <!-- Items FormArray -->
+      <!-- Items -->
       <div formArrayName="items" class="mb-3">
         <label>Items</label>
         <div *ngFor="let item of itemsFormArray.controls; let i = index" [formGroupName]="i" class="row g-2 mb-2">
@@ -70,7 +69,7 @@
       <!-- Add Item Button -->
       <button type="button" class="btn btn-secondary mt-2" (click)="addItem()">Add Item</button>
 
-      <!-- Submit Buttons -->
+      <!-- Submit -->
       <div class="mt-3">
         <button type="submit" class="btn btn-primary me-2" [disabled]="loading">
           {{ isAddMode ? 'Save' : 'Update' }}

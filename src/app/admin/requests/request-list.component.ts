@@ -17,18 +17,25 @@ export class RequestListComponent implements OnInit {
   }
 
   loadRequests(): void {
-    this.loading = true;
-    this.requestService.getAll().subscribe({
-      next: res => {
-        this.requests = res;
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Error loading requests', err);
-        this.loading = false;
-      }
-    });
-  }
+  this.loading = true;
+  this.requestService.getAll().subscribe({
+    next: res => {
+      // ✅ Sort ascending by requestId
+      this.requests = res.sort((a: any, b: any) => {
+        const numA = parseInt(a.requestId?.toString().replace(/\D/g, ''), 10);
+        const numB = parseInt(b.requestId?.toString().replace(/\D/g, ''), 10);
+        return numA - numB; // ascending
+      });
+
+      this.loading = false;
+    },
+    error: err => {
+      console.error('Error loading requests', err);
+      this.loading = false;
+    }
+  });
+}
+
 
   deleteRequest(id: number): void {
     if (!confirm('Are you sure you want to delete this request?')) return;
