@@ -8,7 +8,7 @@
   "vercel-build": "ng build --configuration production",
   "watch": "ng build --watch --configuration development",
   "test": "ng test",
-  "export:all": "folder2txt --output FrontEnd1.txt C:/Users/Y PC/JAVA/F-B angular/Trial-repo_F"
+  "export:all": "folder2txt --output FrontEnd1.txt C:/Users/HF/API/angular-frontend"
 },
 
     "private": true,

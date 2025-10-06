@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RequestService } from '@app/_services/request.service';
 import { EmployeeService } from '@app/_services/employee.service';
-import { Request } from '@app/_models/request';
 
 interface Employee {
   EmployeeID: string;
@@ -21,8 +20,6 @@ export class RequestAddEditComponent implements OnInit {
   submitted = false;
   employees: Employee[] = [];
   id!: number;
-
-  // ✅ store email separately for readonly display
   employeeEmail: string = '';
 
   constructor(
@@ -47,12 +44,8 @@ export class RequestAddEditComponent implements OnInit {
     this.employeeService.getAll().subscribe({
       next: (res: Employee[]) => {
         this.employees = res;
-
-        if (this.isAddMode) {
-          this.addItem();
-        } else {
-          this.loadRequest();
-        }
+        if (this.isAddMode) this.addItem();
+        else this.loadRequest();
       },
       error: err => console.error('Error loading employees', err)
     });
@@ -78,41 +71,47 @@ export class RequestAddEditComponent implements OnInit {
   }
 
   loadRequest(): void {
-    this.requestService.getById(this.id).subscribe((req: any) => {
-      console.log('Loaded request:', req);
+    this.requestService.getById(this.id).subscribe({
+      next: (req: any) => {
+        console.log('Loaded request:', req);
+        this.form.patchValue({
+          employeeId: req.accountId,
+          type: req.type,
+          status: req.status
+        });
+        this.employeeEmail = req.Account?.email || '';
+        this.itemsFormArray.clear();
 
-      this.form.patchValue({
-        employeeId: req.accountId,
-        type: req.type,
-        status: req.status
-      });
-
-      // ✅ capture the Account email for readonly display
-      this.employeeEmail = req.Account?.email || '';
-
-      this.itemsFormArray.clear();
-      if (req.items) {
-        const itemNames =
-          typeof req.items === 'string'
-            ? req.items.split(',').map((n: string) => n.trim())
-            : [];
-        if (itemNames.length > 0) {
-          itemNames.forEach((name: string) => {
-            this.addItem(name, req.quantity || 1);
-          });
+        if (req.items) {
+          const itemNames =
+            typeof req.items === 'string'
+              ? req.items.split(',').map((n: string) => n.trim())
+              : [];
+          if (itemNames.length > 0) {
+            itemNames.forEach((name: string) => {
+              this.addItem(name, req.quantity || 1);
+            });
+          } else {
+            this.addItem();
+          }
         } else {
           this.addItem();
         }
-      } else {
-        this.addItem();
+      },
+      error: err => {
+        console.error('Error loading request:', err);
+        alert('Failed to load request data.');
       }
     });
   }
 
   onSubmit(): void {
+    console.log('Form submit clicked');
     this.submitted = true;
+
     if (this.form.invalid) {
-      alert('Please fill all required fields!');
+      console.warn('Invalid form data:', this.form.value);
+      alert('⚠️ Please fill in all required fields before saving.');
       return;
     }
 
@@ -121,7 +120,7 @@ export class RequestAddEditComponent implements OnInit {
     const itemsArray = this.itemsFormArray.value;
     const itemsString = itemsArray.map((i: any) => i.name).join(', ');
     const totalQuantity = itemsArray.reduce(
-      (sum: number, i: any) => sum + Number(i.quantity),
+      (sum: number, i: any) => sum + Number(i.quantity || 0),
       0
     );
 
@@ -133,18 +132,25 @@ export class RequestAddEditComponent implements OnInit {
       status: this.form.value.status
     };
 
+    console.log('Payload ready:', payload);
+
     const requestObservable = this.isAddMode
       ? this.requestService.create(payload)
       : this.requestService.update(this.id, payload);
 
     requestObservable.subscribe({
-      next: () => {
-        alert(this.isAddMode ? 'Request created successfully!' : 'Request updated successfully!');
+      next: (res) => {
+        console.log('✅ Server response:', res);
+        alert(this.isAddMode ? '✅ Request created successfully!' : '✅ Request updated successfully!');
+        this.loading = false;
         this.router.navigate(['/admin/requests']);
       },
-      error: err => {
-        console.error('Error:', err);
-        alert('Error: ' + (err.error?.message || 'Unknown error'));
+      error: (err) => {
+        console.error('❌ Error saving request:', err);
+        alert('Error saving request: ' + (err.error?.message || 'Unknown error'));
+        this.loading = false;
+      },
+      complete: () => {
         this.loading = false;
       }
     });
