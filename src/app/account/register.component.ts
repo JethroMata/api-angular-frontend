@@ -38,28 +38,34 @@ export class RegisterComponent implements OnInit {
     get f() { return this.form.controls; }
 
     onSubmit() {
-        this.submitted = true;
+  this.submitted = true;
+  this.alertService.clear();
 
-        // reset alerts on submit
-        this.alertService.clear();
+  if (this.form.invalid) return;
 
-        // stop here if form is invalid
-        if (this.form.invalid) {
-            return;
-        }
+  this.submitting = true;
 
-        this.submitting = true;
-        this.accountService.register(this.form.value)
-            .pipe(first())
-            .subscribe({
-                next: () => {
-                    this.alertService.success('Registration successful, please check your email for verification instructions', { keepAfterRouteChange: true });
-                    this.router.navigate(['../login'], { relativeTo: this.route });
-                },
-                error: error => {
-                    this.alertService.error(error);
-                    this.submitting = false;
-                }
-            });
-    }
+  this.accountService.register(this.form.value)
+    .pipe(first())
+    .subscribe({
+      next: (res:any) => {
+        console.log('Registration response:', res);
+        this.alertService.success(
+          res?.message ||
+          'Registration successful! Please check your email for verification instructions.',
+          { keepAfterRouteChange: true }
+        );
+        this.router.navigate(['../login'], { relativeTo: this.route });
+      },
+      error: (error) => {
+        console.error('Registration error:', error);
+        this.alertService.error(error.error?.message || 'Registration failed');
+        this.submitting = false;
+      },
+      complete: () => {
+        // in case backend returns 204 or empty body
+        this.submitting = false;
+      }
+    });
+}
 }
