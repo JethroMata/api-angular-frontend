@@ -14,7 +14,11 @@ export class AccountService {
   public account: Observable<Account | null>;
 
   constructor(private http: HttpClient) {
-    this.accountSubject = new BehaviorSubject<Account | null>(null);
+    // ✅ Restore from localStorage when the app starts
+    const savedAccount = localStorage.getItem('account');
+    this.accountSubject = new BehaviorSubject<Account | null>(
+      savedAccount ? JSON.parse(savedAccount) : null
+    );
     this.account = this.accountSubject.asObservable();
   }
 
@@ -22,24 +26,28 @@ export class AccountService {
     return this.accountSubject.value;
   }
 
-  // ✅ login
+  // ✅ login and store account in localStorage
   login(email: string, password: string) {
     return this.http.post<Account>(`${baseUrl}/authenticate`, { email, password })
       .pipe(map(account => {
+        // store account details + JWT token
+        localStorage.setItem('account', JSON.stringify(account));
         this.accountSubject.next(account);
         return account;
       }));
   }
 
-  // ✅ logout
+  // ✅ logout and clear everything
   logout() {
+    localStorage.removeItem('account');
     this.accountSubject.next(null);
   }
 
-  // ✅ refresh token
+  // ✅ refresh token (also store updated one)
   refreshToken() {
     return this.http.post<Account>(`${baseUrl}/refresh-token`, {})
       .pipe(map(account => {
+        localStorage.setItem('account', JSON.stringify(account));
         this.accountSubject.next(account);
         return account;
       }));
@@ -88,6 +96,7 @@ export class AccountService {
       .pipe(map(x => {
         if (id == this.accountValue?.id) {
           const updated = { ...this.accountValue, ...params };
+          localStorage.setItem('account', JSON.stringify(updated)); // ✅ keep local copy updated
           this.accountSubject.next(updated as Account);
         }
         return x;
