@@ -18,6 +18,7 @@ const adminModule = () => import('./admin/admin.module').then(x => x.AdminModule
 const employeesModule = () => import('./admin/employees/employees.module').then(x => x.EmployeesModule);
 const departmentsModule = () => import('./admin/departments/departments.module').then(x => x.DepartmentsModule);
 const requestsModule = () => import('./admin/requests/requests.module').then(x => x.RequestsModule);
+const positionsModule = () => import('./admin/positions/positions.module').then(x => x.PositionsModule);
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'employees', loadChildren: employeesModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User] } },
   { path: 'departments', loadChildren: departmentsModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User] } },
   { path: 'requests', loadChildren: requestsModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User] } },
+  { path: 'positions', loadChildren: positionsModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User]} },
 
   // Otherwise redirect
   { path: '**', redirectTo: '' }

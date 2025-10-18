@@ -15,9 +15,17 @@
       </div>
 
       <div class="mb-3">
-        <label>Position</label>
-        <input type="text" formControlName="position" class="form-control" />
-      </div>
+  <label>Position</label>
+  <select formControlName="positionId" class="form-select">
+    <!-- <option value="">Select position</option> -->
+    <option *ngFor="let pos of positions" [value]="pos.id">
+      {{ pos.roleType }}
+    </option>
+  </select>
+  <div *ngIf="form.get('positionId')?.touched && form.get('positionId')?.invalid" class="text-danger">
+    Position is required
+  </div>
+</div>
 
       <div class="mb-3">
         <label>Department</label>

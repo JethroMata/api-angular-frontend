@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeService } from '@app/_services/employee.service';
 import { AccountService } from '@app/_services/account.service';
 import { DepartmentService } from '@app/_services/department.service';
+import { PositionService } from '@app/_services/position.service'; // ✅ import the service
 import { Employee } from '@app/_models/employee';
 import { Account } from '@app/_models';
 import { Department } from '@app/_models';
@@ -21,6 +22,7 @@ export class EmployeeAddEditComponent implements OnInit {
 
   accounts: Account[] = [];
   departments: Department[] = [];
+  positions: any[] = []; // ✅ Add this at the top of the class
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,7 +30,8 @@ export class EmployeeAddEditComponent implements OnInit {
     private router: Router,
     private employeeService: EmployeeService,
     private accountService: AccountService,
-    private departmentService: DepartmentService
+    private departmentService: DepartmentService,
+    private positionService: PositionService, // ✅ Add this
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +41,7 @@ export class EmployeeAddEditComponent implements OnInit {
     this.form = this.formBuilder.group({
       accountId: ['', Validators.required],
       departmentId: ['', Validators.required],
-      position: ['', Validators.required],
+      positionId: ['', Validators.required],  // ✅ updated
       hireDate: ['', Validators.required],
       status: ['active', Validators.required] 
     });
@@ -59,31 +62,39 @@ export class EmployeeAddEditComponent implements OnInit {
         });
       }
     });
+    // Load positions from backend
+  this.positionService.getAll().subscribe({
+    next: (data: any) => this.positions = data,
+    error: (err: any) => console.error('Failed to load positions', err)
+  });
+
   }
 
   get f() { return this.form.controls; }
 
-  onSubmit(): void {
-    this.submitted = true;
-    if (this.form.invalid) return alert('Please fill all required fields!');
-    this.loading = true;
+  onSubmit() {
+  if (this.form.invalid) return;
 
-    if (this.isAddMode) this.createEmployee();
-    else this.updateEmployee();
-  }
+  const payload = {
+    ...this.form.value,
+    positionId: this.form.value.positionId // ✅ make sure backend receives positionId
+  };
 
-  private createEmployee(): void {
-    this.employeeService.create(this.form.value).subscribe({
-      next: () => {
-        alert('Employee created successfully!');
-        this.router.navigate(['/admin/employees']);
-      },
-      error: err => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
-  }
+  const request$ = this.isAddMode 
+  ? this.employeeService.create(payload) 
+  : this.employeeService.update(this.EmployeeID, payload); // ✅ use EmployeeID
+
+  request$.subscribe({
+    next: () => {
+      alert(`Employee ${this.isAddMode ? 'added' : 'updated'} successfully!`);
+      this.router.navigate(['/admin/employees']);
+    },
+    error: (err) => {
+      console.error('Error saving employee:', err);
+      alert('Failed to save employee.');
+    }
+  });
+}
 
   private updateEmployee(): void {
     this.employeeService.update(this.EmployeeID, this.form.value).subscribe({

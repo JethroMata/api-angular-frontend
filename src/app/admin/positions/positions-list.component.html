@@ -1,0 +1,43 @@
+<div class="content-wrapper">
+  <div class="card employee-list-card">
+    <h2>POSITIONS</h2>
+
+    <div class="header-row">
+      <button class="btn btn-add-employee" (click)="addPosition()">Add Position</button>
+    </div>
+
+    <div *ngIf="loading" class="text-center p-5">
+      Loading positions...
+    </div>
+
+    <div *ngIf="!loading">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Role Type</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pos of positions">
+            <td>{{ pos.id }}</td>
+            <td>{{ pos.roleType }}</td>
+            <td>
+              <span 
+                class="status-badge" 
+                [ngClass]="pos.status === 'active' ? 'status-active' : 'status-inactive'">
+                {{ pos.status | titlecase }}
+              </span>
+            </td>
+            <td class="action-buttons-cell">
+              <button class="btn btn-edit" (click)="editPosition(pos.id)">Edit</button>
+              <!-- <button class="btn btn-delete" (click)="deletePosition(pos)">Delete</button> -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

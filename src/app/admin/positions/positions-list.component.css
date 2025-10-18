@@ -1,0 +1,161 @@
+/* Wrapper for the whole content */
+.content-wrapper {
+  padding: 30px;
+  background-color: #f5f6fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card styling */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 30px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Heading */
+h2 {
+  font-size: 26px;
+  margin-bottom: 25px;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Header row for button */
+.header-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 10px;
+}
+
+/* Add Position Button */
+.btn-add-employee {
+  background-color: #1e88e5;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn-add-employee:hover {
+  background-color: #1565c0;
+  transform: translateY(-2px);
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+table thead {
+  background-color: #020a10;
+  color: #fff;
+  font-weight: 600;
+}
+
+table th, table td {
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 15px;
+}
+
+table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.2s;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f8f9fa; /* light striped rows */
+}
+
+table tbody tr:hover {
+  background-color: #f6faff;
+}
+
+
+/* --- Status Badges --- */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+  text-align: center;
+}
+
+.status-active {
+  background-color: #24b637; /* green */
+  color: #fff;
+}
+
+.status-inactive {
+  background-color: #dc3545; /* red */
+  color: #fff;
+}
+
+
+/* Edit/Delete buttons */
+.btn-edit, .btn-delete {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn-edit {
+  background-color: #17adf3;
+  color: white;
+  margin-right: 5px;
+}
+
+.btn-edit:hover {
+  background-color: #23b2ff;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  background-color: #ef5350;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #d32f2f;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  table th, table td {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .btn-add-employee {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+}

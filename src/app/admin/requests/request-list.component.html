@@ -38,7 +38,7 @@
           <td>{{ req.created | date:'M/d/yyyy, h:mm a' }}</td>
           <td class="action-cell">
             <a [routerLink]="['/admin/requests/edit', req.requestId]" class="btn action-btn btn-edit">Edit</a>
-            <button class="btn action-btn btn-delete" (click)="deleteRequest(req.requestId)">Delete</button>
+            <!-- <button class="btn action-btn btn-delete" (click)="deleteRequest(req.requestId)">Delete</button> -->
           </td>
         </tr>
         <tr *ngIf="requests.length === 0">

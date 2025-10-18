@@ -12,6 +12,7 @@
             <a routerLink="/employees" *ngIf="account.role === Role.Admin || Role.User"routerLinkActive="active" class="nav-item nav-link">Employees</a>
             <a routerLink="/departments" *ngIf="account.role === Role.Admin || Role.User"routerLinkActive="active" class="nav-item nav-link">Departments</a>
             <a routerLink="/requests" *ngIf="account.role === Role.Admin || Role.User"routerLinkActive="active" class="nav-item nav-link">Requests</a>
+            <a routerLink="/positions" *ngIf="account.role === Role.Admin || Role.User"routerLinkActive="active" class="nav-item nav-link">Positions</a>
         </div>      
              <button (click)="logout()" class="btn btn-link nav-item nav-link">Logout</button>
         </div>

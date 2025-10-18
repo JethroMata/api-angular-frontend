@@ -31,6 +31,11 @@ const routes: Routes = [
         path: 'requests',
         loadChildren: () =>
           import('./requests/requests.module').then(m => m.RequestsModule),
+      },
+      {
+        path: 'positions',
+        loadChildren: () => 
+          import('./positions/positions.module').then(m => m.PositionsModule),
       }
     ],
   },
