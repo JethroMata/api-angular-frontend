@@ -6,8 +6,18 @@ import { Employee } from '@app/_models/employee';
 
 const baseUrl = `${environment.apiUrl}/employees`;
 
+// ✅ Define Manager interface BEFORE using it
+export interface Manager {
+  id: number;
+  employeeId: string;
+  firstName: string;
+  lastName: string;
+  position: string;
+}
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
+  private baseUrl = '/employees';
+
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Employee[]> {
@@ -41,5 +51,14 @@ export class EmployeeService {
   // ---------- WORKFLOW ----------
   getWorkflow(employeeId: string | number) {
     return this.http.get<any[]>(`${environment.apiUrl}/employee-workflows/${employeeId}`);
+}
+
+getHeadByDepartment(deptId: number) {
+  return this.http.get<any>(`${baseUrl}/head/${deptId}`);
+}
+
+// ✅ Get all managers for the Head dropdown
+ getManagers() {
+  return this.http.get<any[]>(`${environment.apiUrl}/employees/managers`);
 }
 }

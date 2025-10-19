@@ -87,6 +87,10 @@ export class AccountService {
     return this.http.get<Account>(`${baseUrl}/${id}`);
   }
 
+ getManagers() {
+  return this.http.get<any[]>(`${environment.apiUrl}/accounts/managers`);
+}
+
   create(account: Account) {
     return this.http.post(baseUrl, account);
   }

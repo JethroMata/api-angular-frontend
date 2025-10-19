@@ -1,8 +1,25 @@
+import { Account } from './account';
+
 export interface Employee {
-  EmployeeID: string; // backend uses EmployeeID, not id
+  EmployeeID: string;
   position: string;
-  hireDate: string; // ISO string
-  status: string; // 'active' or 'inactive'
+  hireDate: string;
+  status: string;
+
+  positionId?: number;
+  headId?: number | null;
+
+  // 👇 Fix starts here
+  Head?: {
+    EmployeeID?: string;
+    Account?: {
+      id?: number;
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+    };
+  };
+  // 👆 Head now matches backend structure
 
   accountId: number;
   departmentId?: number;
@@ -19,4 +36,6 @@ export interface Employee {
     departmentName: string;
     employeeCounts?: number;
   };
+
+  
 }

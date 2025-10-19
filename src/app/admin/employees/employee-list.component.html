@@ -16,6 +16,7 @@
             <th>Account</th>
             <th>Position</th>
             <th>Department</th>
+            <th>Head</th> <!-- ✅ new column -->
             <th>Hire Date</th>
             <th>Status</th>
             <th>Actions</th>
@@ -27,6 +28,14 @@
             <td>{{ employee.Account?.email }}</td>
             <td>{{ employee.position }}</td>
             <td>{{ employee.Department?.departmentName }}</td>
+            <!-- ✅ HEAD COLUMN -->
+          <td>
+  <ng-container *ngIf="employee.Head && employee.Head.Account">
+    {{ employee.Head.Account.firstName }} {{ employee.Head.Account.lastName }}
+  </ng-container>
+  <ng-container *ngIf="!employee.Head">—</ng-container>
+</td>
+
             <td>{{ formatDate(employee.hireDate) }}</td>
             <td>
               <span

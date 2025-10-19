@@ -1,60 +1,76 @@
-<div class="p-4 mt-3">
-  <div class="card-header">
-    <h5>{{ isAddMode ? 'Add Employee' : 'Edit Employee' }}</h5>
-  </div>
-  <div class="card-body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      
-      <div class="mb-3">
-        <label>Account</label>
-        <select formControlName="accountId" class="form-select">
-          <option *ngFor="let acc of accounts" [value]="acc.id">
-            {{ acc.email }} ({{ acc.firstName }} {{ acc.lastName }})
-          </option>
-        </select>
-      </div>
+<div class="form-container mt-3 p-4">
+  <h4 class="form-title">{{ isAddMode ? 'Add Employee' : 'Edit Employee' }}</h4>
 
-      <div class="mb-3">
-  <label>Position</label>
-  <select formControlName="positionId" class="form-select">
-    <!-- <option value="">Select position</option> -->
-    <option *ngFor="let pos of positions" [value]="pos.id">
-      {{ pos.roleType }}
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="employee-form">
+    <!-- Account -->
+    <div class="form-group mb-3">
+      <label>Account</label>
+      <select formControlName="accountId" class="form-select">
+        <option value="">Select Account</option>
+        <option *ngFor="let acc of accounts" [value]="acc.id">
+          {{ acc.email }} ({{ acc.firstName }} {{ acc.lastName }})
+        </option>
+      </select>
+    </div>
+
+    <!-- Department -->
+    <div class="form-group mb-3">
+      <label>Department</label>
+      <select formControlName="departmentId" class="form-select" (change)="onDepartmentChange($event)">
+        <option value="">Select Department</option>
+        <option *ngFor="let dept of departments" [value]="dept.id">
+          {{ dept.departmentName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Position -->
+    <div class="form-group mb-3">
+      <label>Position</label>
+      <select formControlName="position" class="form-select" (change)="onPositionChange($event)">
+        <option value="">Select Position</option>
+        <option *ngFor="let pos of positions" [value]="pos.roleType">
+          {{ pos.roleType }} ({{ pos.status | titlecase }})
+        </option>
+      </select>
+    </div>
+
+    <!-- ✅ Head dropdown -->
+<div *ngIf="showHeadDropdown" class="mb-3">
+  <label for="headId" class="form-label">Head(Manager)</label>
+  <select
+    formControlName="headId"
+    id="headId"
+    class="form-select"
+  >
+    <option value="">-- Select Head --</option>
+    <option *ngFor="let manager of managers" [value]="manager.EmployeeID">
+      {{ manager.firstName }} {{ manager.lastName }}
     </option>
   </select>
-  <div *ngIf="form.get('positionId')?.touched && form.get('positionId')?.invalid" class="text-danger">
-    Position is required
-  </div>
 </div>
 
-      <div class="mb-3">
-        <label>Department</label>
-        <select formControlName="departmentId" class="form-select">
-          <option *ngFor="let dept of departments" [value]="dept.id">
-            {{ dept.departmentName }}
-          </option>
-        </select>
-      </div>
+    <!-- Hire Date -->
+    <div class="form-group mb-3">
+      <label>Hire Date</label>
+      <input type="date" formControlName="hireDate" class="form-control" />
+    </div>
 
-      <div class="mb-3">
-        <label>Hire Date</label>
-        <input type="date" formControlName="hireDate" class="form-control" />
-      </div>
+    <!-- Status -->
+    <div class="form-group mb-4">
+      <label>Status</label>
+      <select formControlName="status" class="form-select">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
 
-      <div class="mb-3">
-        <label>Status</label>
-        <select formControlName="status" class="form-select">
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
-      </div>
-
-      <div>
-        <button [disabled]="loading" class="btn btn-primary me-2">
-          {{ isAddMode ? 'Save' : 'Update' }}
-        </button>
-        <a routerLink="/admin/employees" class="btn btn-secondary">Cancel</a>
-      </div>
-    </form>
-  </div>
+    <!-- Buttons -->
+    <div class="form-actions">
+      <button class="btn btn-primary me-2" [disabled]="submitting || loading">
+        {{ isAddMode ? 'Save' : 'Update' }}
+      </button>
+      <a routerLink="/admin/employees" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
 </div>
