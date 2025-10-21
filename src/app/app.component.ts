@@ -1,26 +1,24 @@
 ﻿import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AccountService } from '@app/_services';
+import { Account, Role } from '@app/_models'; // ✅ Import Role here
 
-import { AccountService } from './_services';
-import { Account, Role } from './_models';
-
-@Component({ 
-    selector: 'app-root', 
-    templateUrl: 'app.component.html' 
-})
+@Component({ selector: 'app-root', templateUrl: 'app.component.html' })
 export class AppComponent {
-    Role = Role;
-    account?: Account | null;
+  account?: Account | null;
+  Role = Role; // ✅ Make Role accessible in HTML
 
-    constructor(
-        private accountService: AccountService,
-        private router: Router
-    ) {
-        this.accountService.account.subscribe(x => this.account = x);
-    }
+  constructor(
+    private router: Router,
+    private accountService: AccountService
+  ) {
+    this.accountService.account.subscribe((x: Account | null) => {
+      this.account = x;
+    });
+  }
 
-    logout() {
-        this.accountService.logout();       // clear token/session
-        this.router.navigate(['/account/login']);  // redirect to login
-    }
+  logout() {
+    this.accountService.logout();
+    this.router.navigate(['/account/login']);
+  }
 }

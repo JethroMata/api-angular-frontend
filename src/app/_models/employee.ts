@@ -1,28 +1,13 @@
-import { Account } from './account';
-
 export interface Employee {
   EmployeeID: string;
   position: string;
   hireDate: string;
   status: string;
 
-  positionId?: number;
-  headId?: number | null;
-
-  // 👇 Fix starts here
-  Head?: {
-    EmployeeID?: string;
-    Account?: {
-      id?: number;
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-    };
-  };
-  // 👆 Head now matches backend structure
-
   accountId: number;
   departmentId?: number;
+  positionId?: number;
+  headId?: string | null; // ✅ same type as EmployeeID (varchar)
 
   Account?: {
     id: number;
@@ -37,5 +22,12 @@ export interface Employee {
     employeeCounts?: number;
   };
 
-  
+  Head?: { // ✅ this matches your backend alias
+    EmployeeID?: string;
+    Account?: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+    };
+  };
 }

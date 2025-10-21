@@ -16,7 +16,6 @@ export class EmployeeListComponent implements OnInit {
   departments: Department[] = [];
   loading = true;
 
-  // allow null initially
   selectedEmployee: Employee | null = null;
   newDepartmentId: number | null = null;
 
@@ -32,29 +31,27 @@ export class EmployeeListComponent implements OnInit {
   }
 
   loadEmployees(): void {
-  this.loading = true;
-  this.employeeService.getAll().subscribe({
-    next: (data: Employee[]) => {
-      // ✅ Sort ascending by Employee ID number (EMP001, EMP002, etc.)
-      this.employees = data.sort((a, b) => {
-        const numA = parseInt(a.EmployeeID.replace(/\D/g, ''), 10);
-        const numB = parseInt(b.EmployeeID.replace(/\D/g, ''), 10);
-        return numA - numB; // ascending order
-      });
-
-      this.loading = false;
-    },
-    error: (err: any) => {
-      console.error('Failed to load employees', err);
-      this.loading = false;
-    }
-  });
-}
-
+    this.loading = true;
+    this.employeeService.getAll().subscribe({
+      next: (data: Employee[]) => {
+        // ✅ Sort ascending by Employee ID (EMP001, EMP002, etc.)
+        this.employees = data.sort((a, b) => {
+          const numA = parseInt(a.EmployeeID.replace(/\D/g, ''), 10);
+          const numB = parseInt(b.EmployeeID.replace(/\D/g, ''), 10);
+          return numA - numB;
+        });
+        this.loading = false;
+      },
+      error: (err: any) => {
+        console.error('Failed to load employees', err);
+        this.loading = false;
+      }
+    });
+  }
 
   loadDepartments(): void {
     this.departmentService.getAll().subscribe({
-      next: (data: Department[]) => this.departments = data,
+      next: (data: Department[]) => (this.departments = data),
       error: (err: any) => console.error('Failed to load departments', err)
     });
   }
@@ -63,14 +60,23 @@ export class EmployeeListComponent implements OnInit {
     return isoString ? new Date(isoString).toLocaleDateString('en-US') : '';
   }
 
+  // ✅ SAFELY GET HEAD/MANAGER NAME
+  getHeadName(emp: Employee): string {
+    if (emp.Head && emp.Head.Account) {
+      const first = emp.Head.Account.firstName || '';
+      const last = emp.Head.Account.lastName || '';
+      return `${first} ${last}`.trim();
+    }
+    return '—';
+  }
+
   viewRequests(emp: Employee) {
     this.router.navigate(['/admin/requests'], { queryParams: { employeeId: emp.EmployeeID } });
   }
 
   viewWorkflows(emp: Employee) {
-  this.router.navigate(['/admin/employees', emp.EmployeeID, 'workflow']);
-}
-
+    this.router.navigate(['/admin/employees', emp.EmployeeID, 'workflow']);
+  }
 
   editEmployee(emp: Employee) {
     this.router.navigate(['/admin/employees/edit', emp.EmployeeID]);
@@ -110,7 +116,7 @@ export class EmployeeListComponent implements OnInit {
           this.closeModal();
           this.loadEmployees();
         },
-        error: err => console.error('Transfer failed', err)
+        error: (err) => console.error('Transfer failed', err)
       });
   }
 }

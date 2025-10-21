@@ -6,8 +6,8 @@
     <div class="form-group mb-3">
       <label>Account</label>
       <select formControlName="accountId" class="form-select">
-        <option value="">Select Account</option>
-        <option *ngFor="let acc of accounts" [value]="acc.id">
+        <option [ngValue]="''">Select Account</option>
+        <option *ngFor="let acc of accounts" [ngValue]="acc.id">
           {{ acc.email }} ({{ acc.firstName }} {{ acc.lastName }})
         </option>
       </select>
@@ -16,9 +16,13 @@
     <!-- Department -->
     <div class="form-group mb-3">
       <label>Department</label>
-      <select formControlName="departmentId" class="form-select" (change)="onDepartmentChange($event)">
-        <option value="">Select Department</option>
-        <option *ngFor="let dept of departments" [value]="dept.id">
+      <select
+        formControlName="departmentId"
+        class="form-select"
+        (change)="onDepartmentChange($event)"
+      >
+        <option [ngValue]="''">Select Department</option>
+        <option *ngFor="let dept of departments" [ngValue]="dept.id">
           {{ dept.departmentName }}
         </option>
       </select>
@@ -27,28 +31,29 @@
     <!-- Position -->
     <div class="form-group mb-3">
       <label>Position</label>
-      <select formControlName="position" class="form-select" (change)="onPositionChange($event)">
-        <option value="">Select Position</option>
-        <option *ngFor="let pos of positions" [value]="pos.roleType">
+      <select
+        formControlName="position"
+        class="form-select"
+        (change)="onPositionChange($event)"
+      >
+        <option [ngValue]="''">Select Position</option>
+        <option *ngFor="let pos of positions" [ngValue]="pos.roleType">
           {{ pos.roleType }} ({{ pos.status | titlecase }})
         </option>
       </select>
     </div>
 
-    <!-- ✅ Head dropdown -->
-<div *ngIf="showHeadDropdown" class="mb-3">
-  <label for="headId" class="form-label">Head(Manager)</label>
-  <select
-    formControlName="headId"
-    id="headId"
-    class="form-select"
-  >
-    <option value="">-- Select Head --</option>
-    <option *ngFor="let manager of managers" [value]="manager.EmployeeID">
-      {{ manager.firstName }} {{ manager.lastName }}
-    </option>
-  </select>
-</div>
+    <!-- Head Dropdown -->
+    <div *ngIf="showHeadDropdown" class="mb-3">
+      <label for="headId" class="form-label">Head (Manager)</label>
+      <select formControlName="headId" id="headId" class="form-select">
+        <option [ngValue]="null">-- Select Head --</option>
+        <!-- ✅ FIXED: use employeeId and [ngValue] -->
+        <option *ngFor="let manager of managers" [ngValue]="manager.employeeId">
+          {{ manager.firstName }} {{ manager.lastName }}
+        </option>
+      </select>
+    </div>
 
     <!-- Hire Date -->
     <div class="form-group mb-3">
@@ -60,14 +65,18 @@
     <div class="form-group mb-4">
       <label>Status</label>
       <select formControlName="status" class="form-select">
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
+        <option [ngValue]="'active'">Active</option>
+        <option [ngValue]="'inactive'">Inactive</option>
       </select>
     </div>
 
     <!-- Buttons -->
     <div class="form-actions">
-      <button class="btn btn-primary me-2" [disabled]="submitting || loading">
+      <button
+        class="btn btn-primary me-2"
+        [disabled]="submitting || loading"
+        type="submit"
+      >
         {{ isAddMode ? 'Save' : 'Update' }}
       </button>
       <a routerLink="/admin/employees" class="btn btn-secondary">Cancel</a>

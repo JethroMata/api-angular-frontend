@@ -11,7 +11,6 @@ import { Department } from '@app/_models';
 @Component({
   selector: 'app-employee-add-edit',
   templateUrl: './employee-add-edit.component.html'
- // styleUrls: ['./employee-add-edit.component.css']
 })
 export class EmployeeAddEditComponent implements OnInit {
   form!: FormGroup;
@@ -26,8 +25,6 @@ export class EmployeeAddEditComponent implements OnInit {
   managers: any[] = [];
 
   showHeadDropdown = false;
-  showHeadField = false;
-  loadingManagers = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,72 +57,61 @@ export class EmployeeAddEditComponent implements OnInit {
 
     // Load existing employee if editing
     if (!this.isAddMode && this.EmployeeID) {
-  this.employeeService.getById(this.EmployeeID).subscribe(emp => {
-    this.form.patchValue({
-      accountId: emp.accountId,
-      departmentId: emp.departmentId,
-      position: emp.position, // ✅ fix here
-      headId: emp.headId || null,
-      hireDate: emp.hireDate,
-      status: emp.status || 'active'
-    });
-
+      this.employeeService.getById(this.EmployeeID).subscribe((emp) => {
+        this.form.patchValue({
+          accountId: emp.accountId,
+          departmentId: emp.departmentId,
+          position: emp.position,
+          headId: emp.headId || null,
+          hireDate: emp.hireDate,
+          status: emp.status || 'active'
+        });
 
         this.updateHeadVisibility(emp.position);
       });
     }
   }
 
-  // ✅ Called when user changes Position dropdown
- onPositionChange(event: Event): void {
-  const target = event.target as HTMLSelectElement;
-  const selectedPosition = target?.value?.toLowerCase();
+  onPositionChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const selectedPosition = target?.value?.toLowerCase();
 
-  if (selectedPosition && selectedPosition !== 'manager') {
-    this.showHeadDropdown = true;
-    this.loadManagers();
-  } else {
-    this.showHeadDropdown = false;
-    this.form.patchValue({ headId: null });
+    if (selectedPosition && selectedPosition !== 'manager') {
+      this.showHeadDropdown = true;
+      this.loadManagers();
+    } else {
+      this.showHeadDropdown = false;
+      this.form.patchValue({ headId: null });
+    }
   }
-  
-}
 
-  // ✅ Show Head dropdown only if position != "Manager"
   private updateHeadVisibility(position: string): void {
     if (!position) {
-      this.showHeadField = false;
+      this.showHeadDropdown = false;
       return;
     }
 
     if (position.toLowerCase() === 'manager') {
-      this.showHeadField = false;
+      this.showHeadDropdown = false;
       this.form.get('headId')?.setValue('');
     } else {
-      this.showHeadField = true;
+      this.showHeadDropdown = true;
       this.loadManagers();
     }
   }
 
-  // ✅ Load all Managers from backend (via /accounts/managers)
   loadManagers() {
-  this.employeeService.getManagers().subscribe({
-    next: (data) => {
-      this.managers = data || [];
-      console.log('✅ Managers loaded:', this.managers);
-
-      // 👇 Add this line
-      if (this.managers.length > 0) {
-       console.log('🧩 Example manager object:', JSON.stringify(this.managers[0], null, 2));
+    this.employeeService.getManagers().subscribe({
+      next: (data) => {
+        // ✅ FIX — ensure we have EmployeeID and Account name
+        this.managers = data || [];
+      },
+      error: (err) => {
+        console.error('Failed to load managers:', err);
       }
-    },
-    error: (err) => {
-      console.error('❌ Failed to load managers:', err);
-    }
-  });
-}
+    });
+  }
 
-  // ✅ Department dropdown change handler (kept from your code)
   onDepartmentChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const deptId = select?.value;
@@ -133,8 +119,9 @@ export class EmployeeAddEditComponent implements OnInit {
 
     this.employeeService.getHeadByDepartment(+deptId).subscribe({
       next: (head: any) => {
-        if (head && head.Account) {
-          this.form.patchValue({ headId: head.Account.id });
+        if (head && head.EmployeeID) {
+          // ✅ FIX — use EmployeeID (varchar) not Account.id (number)
+          this.form.patchValue({ headId: head.EmployeeID });
         } else {
           this.form.patchValue({ headId: null });
         }
@@ -143,7 +130,6 @@ export class EmployeeAddEditComponent implements OnInit {
     });
   }
 
-  // ✅ Submit form (Create or Update)
   onSubmit(): void {
     this.submitting = true;
     if (this.form.invalid) {
@@ -151,14 +137,16 @@ export class EmployeeAddEditComponent implements OnInit {
       return;
     }
 
+    // ✅ FIX — keep headId as string (EmployeeID), not convert to number
     const payload = {
-  ...this.form.value,
-  headId:
-    this.form.value.headId && this.form.value.headId !== 'undefined'
-      ? Number(this.form.value.headId)
-      : null
-};
-    console.log('Submitting employee payload:', payload);
+      ...this.form.value,
+      headId:
+        this.form.value.headId && this.form.value.headId !== 'undefined'
+          ? String(this.form.value.headId)
+          : null
+    };
+
+    console.log('Submitting payload:', payload); // helpful debug
 
     const request$ = this.isAddMode
       ? this.employeeService.create(payload)
