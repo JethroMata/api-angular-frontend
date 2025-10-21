@@ -1,0 +1,31 @@
+.table th {
+  background-color: #a19f9f !important;
+  color: white !important;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.status-badge {
+  color: white !important;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 5px;
+}
+
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: none;
+}
+
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+}

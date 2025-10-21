@@ -26,14 +26,14 @@ const routes: Routes = [
   { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
 
   // 🔹 Admin (Accounts only)
-  { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
+  { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard]/*, data: { roles: [Role.Admin] }*/ },
   //{ path: 'accounts', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
 
   // 🔹 User (Employees, Departments, Requests only)
-  { path: 'employees', loadChildren: employeesModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User] } },
-  { path: 'departments', loadChildren: departmentsModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User] } },
-  { path: 'requests', loadChildren: requestsModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User] } },
-  { path: 'positions', loadChildren: positionsModule, canActivate: [AuthGuard], data: { roles: [Role.Admin, Role.User]} },
+  { path: 'employees', loadChildren: employeesModule, canActivate: [AuthGuard]/*, data: { roles: [Role.Admin, Role.User] }*/ },
+  { path: 'departments', loadChildren: departmentsModule, canActivate: [AuthGuard]/*, data: { roles: [Role.Admin, Role.User] }*/ },
+  { path: 'requests', loadChildren: requestsModule, canActivate: [AuthGuard]/*, data: { roles: [Role.Admin, Role.User] } */},
+  { path: 'positions', loadChildren: positionsModule, canActivate: [AuthGuard]/*, data: { roles: [Role.Admin, Role.User]}*/ },
 
   // Otherwise redirect
   { path: '**', redirectTo: '' }

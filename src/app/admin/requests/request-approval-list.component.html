@@ -1,0 +1,63 @@
+<div class="card mt-3 shadow-sm border-0">
+  <!-- Header -->
+  <div class="card-header bg-dark text-white fw-bold fs-5">
+    Requests Pending for Approval
+  </div>
+
+  <!-- Table -->
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="bg-dark text-white">
+        <tr>
+          <th>ID</th>
+          <th>Requester</th>
+          <th>Type</th>
+          <th>Items</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let req of requests">
+          <td>{{ req.requestId }}</td>
+          <td>{{ req.Account?.email }}</td>
+          <td>{{ req.type }}</td>
+          <td>{{ req.items }}</td>
+          <td>{{ req.quantity }}</td>
+          <td>
+            <span
+              class="badge fw-bold px-3 py-2"
+              [ngClass]="{
+                'bg-warning text-white': req.status === 'pending',
+                'bg-success': req.status === 'approved',
+                'bg-danger': req.status === 'rejected'
+              }"
+            >
+              {{ req.status | uppercase }}
+            </span>
+          </td>
+          <td>
+            <button
+              class="btn btn-success btn-sm me-2"
+              (click)="approveRequest(req.requestId)"
+            >
+              Approve
+            </button>
+            <button
+              class="btn btn-danger btn-sm"
+              (click)="rejectRequest(req.requestId)"
+            >
+              Reject
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Back button -->
+  <div class="card-footer text-end">
+    <button class="btn btn-secondary" routerLink="/admin/requests">← Back</button>
+  </div>
+</div>

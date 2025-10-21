@@ -5,11 +5,13 @@ import { RequestsRoutingModule } from './requests-routing.module';
 
 import { RequestListComponent } from './request-list.component';
 import { RequestAddEditComponent } from './request-add-edit.component';
+import { RequestApprovalListComponent } from './request-approval-list.component';
 
 @NgModule({
   declarations: [
     RequestListComponent,
-    RequestAddEditComponent
+    RequestAddEditComponent,
+    RequestApprovalListComponent // ✅ add this
   ],
   imports: [
     CommonModule,

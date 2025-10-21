@@ -181,3 +181,9 @@
 .data-table tbody tr:hover {
   background-color: #f9f9f9;
 }
+
+.status-draft {
+  background-color: #6c757d; /* Gray */
+  color: white;
+}
+

@@ -1,11 +1,21 @@
 <div class="content-wrapper">
   <div class="list-container">
-    <h2>REQUESTS</h2>
+    <h2 class="mb-3 text-start">REQUESTS</h2>
 
-     <div class="header-row">
-      <a routerLink="/admin/requests/add" class="btn btn-primary add-button">Add Request</a>
+    <!-- Header row -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <!-- Left side: Add Request button -->
+      <a routerLink="/admin/requests/add" class="btn btn-primary">
+        Add Request
+      </a>
+
+      <!-- Right side: For Approval button -->
+      <a routerLink="/admin/requests/approval" class="btn btn-primary">For Approval</a>
     </div>
 
+    
+
+    <!-- Table -->
     <table class="data-table">
       <thead>
         <tr>
@@ -19,34 +29,40 @@
           <th>Actions</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr *ngFor="let req of requests">
+        <tr *ngFor="let req of filteredRequests">
           <td>{{ req.requestId }}</td>
           <td>{{ req.Account?.email }}</td>
           <td>{{ req.type }}</td>
           <td>{{ req.items }}</td>
           <td>{{ req.quantity }}</td>
-          <td>
-            <span class="status-badge" [ngClass]="{
-              'status-pending': req.status === 'pending',
-              'status-approved': req.status === 'approved',
-              'status-rejected': req.status === 'rejected'
-            }">
-              {{ req.status }}
-            </span>
-          </td>
+        <td>
+  <span
+    class="status-badge"
+    [ngClass]="{
+      'status-draft': req.items?.includes('(draft)'),
+      'status-pending': req.status === 'pending' && !req.items?.includes('(draft)'),
+      'status-approved': req.status === 'approved',
+      'status-rejected': req.status === 'rejected'
+    }"
+  >
+    {{ req.items?.includes('(draft)') ? 'DRAFT' : req.status?.toUpperCase() }}
+  </span>
+</td>
           <td>{{ req.created | date:'M/d/yyyy, h:mm a' }}</td>
           <td class="action-cell">
-            <a [routerLink]="['/admin/requests/edit', req.requestId]" class="btn action-btn btn-edit">Edit</a>
-            <!-- <button class="btn action-btn btn-delete" (click)="deleteRequest(req.requestId)">Delete</button> -->
+            <a [routerLink]="['/admin/requests/edit', req.requestId]" class="btn action-btn btn-edit">
+              Edit
+            </a>
           </td>
         </tr>
-        <tr *ngIf="requests.length === 0">
+
+        <tr *ngIf="filteredRequests.length === 0">
           <td colspan="8" class="text-center">No requests found.</td>
         </tr>
       </tbody>
     </table>
 
-   
   </div>
 </div>

@@ -26,6 +26,10 @@ export class AccountService {
     return this.accountSubject.value;
   }
 
+  public get userValue() {     // 👈 add this alias
+  return this.accountSubject.value;
+}
+
   // ✅ login and store account in localStorage
   login(email: string, password: string) {
     return this.http.post<Account>(`${baseUrl}/authenticate`, { email, password })

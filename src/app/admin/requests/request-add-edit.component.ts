@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RequestService } from '@app/_services/request.service';
-import { EmployeeService } from '@app/_services/employee.service';
-
-interface Employee {
-  EmployeeID: string;
-  Account?: { id: number; email: string };
-}
+import { AccountService } from '@app/_services/account.service';
 
 @Component({
   selector: 'app-request-add-edit',
@@ -16,18 +11,18 @@ interface Employee {
 export class RequestAddEditComponent implements OnInit {
   form!: FormGroup;
   isAddMode = true;
-  loading = false;
-  submitted = false;
-  employees: Employee[] = [];
   id!: number;
-  employeeEmail: string = '';
+  loading = false;
+  canEdit = true;
+  statusMessage = '';
+  statusColor = '';
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private requestService: RequestService,
-    private employeeService: EmployeeService
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
@@ -35,122 +30,108 @@ export class RequestAddEditComponent implements OnInit {
     this.isAddMode = !this.id;
 
     this.form = this.fb.group({
-      employeeId: ['', Validators.required],
+      accountId: [''],
       type: ['', Validators.required],
-      items: this.fb.array([], Validators.required),
-      status: [this.isAddMode ? 'pending' : '', Validators.required]
+      items: ['', Validators.required],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      status: ['draft']
     });
 
-    this.employeeService.getAll().subscribe({
-      next: (res: Employee[]) => {
-        this.employees = res;
-        if (this.isAddMode) this.addItem();
-        else this.loadRequest();
-      },
-      error: err => console.error('Error loading employees', err)
-    });
-  }
+    // Auto-fill current user account
+    const currentUser = this.accountService.accountValue;
+    if (currentUser) {
+      this.form.patchValue({ accountId: currentUser.id });
+    }
 
-  get itemsFormArray(): FormArray {
-    return this.form.get('items') as FormArray;
-  }
-
-  addItem(name: string = '', quantity: number = 1): void {
-    this.itemsFormArray.push(
-      this.fb.group({
-        name: [name, Validators.required],
-        quantity: [quantity, [Validators.required, Validators.min(1)]]
-      })
-    );
-  }
-
-  removeItem(index: number): void {
-    if (this.itemsFormArray.length > 1) {
-      this.itemsFormArray.removeAt(index);
+    if (!this.isAddMode) {
+      this.loadRequest();
     }
   }
 
   loadRequest(): void {
     this.requestService.getById(this.id).subscribe({
-      next: (req: any) => {
-        console.log('Loaded request:', req);
-        this.form.patchValue({
-          employeeId: req.accountId,
-          type: req.type,
-          status: req.status
-        });
-        this.employeeEmail = req.Account?.email || '';
-        this.itemsFormArray.clear();
+      next: (req) => {
+        this.form.patchValue(req);
+        const status = req.status?.toLowerCase();
 
-        if (req.items) {
-          const itemNames =
-            typeof req.items === 'string'
-              ? req.items.split(',').map((n: string) => n.trim())
-              : [];
-          if (itemNames.length > 0) {
-            itemNames.forEach((name: string) => {
-              this.addItem(name, req.quantity || 1);
-            });
-          } else {
-            this.addItem();
-          }
-        } else {
-          this.addItem();
+        // Disable editing for approved/rejected/pending
+        if (['pending', 'approved', 'rejected'].includes(status)) {
+          this.form.disable();
+          this.canEdit = false;
+          this.setStatusMessage(status);
         }
       },
-      error: err => {
-        console.error('Error loading request:', err);
-        alert('Failed to load request data.');
+      error: (err) => console.error('Error loading request:', err)
+    });
+  }
+
+  private setStatusMessage(status: string) {
+    const formatted = status.toUpperCase();
+    switch (status) {
+      case 'pending':
+        this.statusColor = 'info';
+        this.statusMessage = `This request cannot be edited because its status is ${formatted}.`;
+        break;
+      case 'approved':
+        this.statusColor = 'success';
+        this.statusMessage = `This request cannot be edited because its status is ${formatted}.`;
+        break;
+      case 'rejected':
+        this.statusColor = 'danger';
+        this.statusMessage = `This request cannot be edited because its status is ${formatted}.`;
+        break;
+      default:
+        this.statusMessage = '';
+    }
+  }
+
+  saveDraft(): void {
+    if (this.form.invalid) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    const payload = { ...this.form.value, status: 'draft' };
+    this.loading = true;
+
+    const request$ = this.isAddMode
+      ? this.requestService.create(payload)
+      : this.requestService.update(this.id, payload);
+
+    request$.subscribe({
+      next: () => {
+        alert('Request saved as draft.');
+        this.router.navigate(['/admin/requests']);
+      },
+      error: (err) => {
+        console.error('Error saving draft:', err);
+        alert('Failed to save draft.');
+        this.loading = false;
       }
     });
   }
 
-  onSubmit(): void {
-    console.log('Form submit clicked');
-    this.submitted = true;
-
+  submitForApproval(): void {
     if (this.form.invalid) {
-      console.warn('Invalid form data:', this.form.value);
-      alert('⚠️ Please fill in all required fields before saving.');
+      alert('Please fill in all required fields.');
       return;
     }
 
+    const payload = { ...this.form.value, status: 'pending' };
     this.loading = true;
 
-    const itemsArray = this.itemsFormArray.value;
-    const itemsString = itemsArray.map((i: any) => i.name).join(', ');
-    const totalQuantity = itemsArray.reduce(
-      (sum: number, i: any) => sum + Number(i.quantity || 0),
-      0
-    );
-
-    const payload = {
-      accountId: this.form.value.employeeId,
-      type: this.form.value.type,
-      items: itemsString,
-      quantity: totalQuantity,
-      status: this.form.value.status
-    };
-
-    console.log('Payload ready:', payload);
-
-    const requestObservable = this.isAddMode
+    const request$ = this.isAddMode
       ? this.requestService.create(payload)
       : this.requestService.update(this.id, payload);
 
-    requestObservable.subscribe({
-      next: (res) => {
-        console.log('✅ Server response:', res);
-        alert(this.isAddMode ? '✅ Request created successfully!' : '✅ Request updated successfully!');
-        this.loading = false;
+    request$.subscribe({
+      next: () => {
+        alert('Request submitted for approval.');
         this.router.navigate(['/admin/requests']);
       },
       error: (err) => {
-        console.error('❌ Error saving request:', err);
-        alert('Error saving request: ' + (err.error?.message || 'Unknown error'));
-        this.loading = false;
-      },
-      complete: () => {
+        console.error('Error submitting for approval:', err);
+        alert('Failed to submit request.');
         this.loading = false;
       }
     });

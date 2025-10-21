@@ -11,6 +11,8 @@ export interface RequestModel {
   accountId: number;
   type: string;
   items: RequestItem[];
+  quantity?: number;
+  status?: string; // ✅ Added this line
 }
 
 @Injectable({
@@ -33,7 +35,7 @@ export class RequestService {
     return this.http.post<any>(this.baseUrl, request);
   }
 
-  update(id: number, request: RequestModel): Observable<any> {
+   update(id: number, request: Partial<RequestModel>): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, request);
   }
 
@@ -41,5 +43,18 @@ export class RequestService {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
 
- 
+  // ✅ Pending, Approve, Reject methods using same base URL
+  getPending(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/pending`);
+  }
+
+  approve(id: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/${id}/approve`, {});
+  }
+
+  reject(id: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/${id}/reject`, {});
+  }
 }
+ 
+
