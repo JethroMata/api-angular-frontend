@@ -19,7 +19,7 @@ export interface RequestModel {
   providedIn: 'root'
 })
 export class RequestService {
-  private baseUrl = 'http://localhost:4000/requests';
+  private baseUrl = 'http://localhost:4000/api/requests';
 
   constructor(private http: HttpClient) {}
 
