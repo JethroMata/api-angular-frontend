@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '@environments/environment'; // ✅ use environment
 
 export interface RequestItem {
   name: string;
@@ -12,14 +13,14 @@ export interface RequestModel {
   type: string;
   items: RequestItem[];
   quantity?: number;
-  status?: string; // ✅ Added this line
+  status?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class RequestService {
-  private baseUrl = 'http://localhost:4000/api/requests';
+  private baseUrl = `${environment.apiUrl}/requests`; // ✅ use dynamic URL
 
   constructor(private http: HttpClient) {}
 
@@ -35,7 +36,7 @@ export class RequestService {
     return this.http.post<any>(this.baseUrl, request);
   }
 
-   update(id: number, request: Partial<RequestModel>): Observable<any> {
+  update(id: number, request: Partial<RequestModel>): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, request);
   }
 
@@ -43,7 +44,6 @@ export class RequestService {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
 
-  // ✅ Pending, Approve, Reject methods using same base URL
   getPending(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/pending`);
   }
@@ -56,5 +56,3 @@ export class RequestService {
     return this.http.post<any>(`${this.baseUrl}/${id}/reject`, {});
   }
 }
- 
-
