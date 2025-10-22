@@ -31,11 +31,7 @@
     <!-- Position -->
     <div class="form-group mb-3">
       <label>Position</label>
-      <select
-        formControlName="position"
-        class="form-select"
-        (change)="onPositionChange($event)"
-      >
+      <select formControlName="position" class="form-select">
         <option [ngValue]="''">Select Position</option>
         <option *ngFor="let pos of positions" [ngValue]="pos.roleType">
           {{ pos.roleType }} ({{ pos.status | titlecase }})
@@ -48,7 +44,6 @@
       <label for="headId" class="form-label">Head (Manager)</label>
       <select formControlName="headId" id="headId" class="form-select">
         <option [ngValue]="null">-- Select Head --</option>
-        <!-- ✅ FIXED: use employeeId and [ngValue] -->
         <option *ngFor="let manager of managers" [ngValue]="manager.employeeId">
           {{ manager.firstName }} {{ manager.lastName }}
         </option>
