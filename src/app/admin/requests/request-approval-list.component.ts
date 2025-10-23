@@ -23,18 +23,18 @@ export class RequestApprovalListComponent implements OnInit {
 
   // 🔹 Load pending requests
   loadPendingRequests(): void {
-    this.loading = true;
-    this.requestService.getPending().subscribe({
-      next: (res) => {
-        this.requests = res || [];
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading pending requests:', err);
-        this.loading = false;
-      }
-    });
-  }
+  this.loading = true;
+  this.requestService.getPending().subscribe({
+    next: (res) => {
+      this.requests = res || [];
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('Error loading pending requests:', err);
+      this.loading = false;
+    }
+  });
+}
 
   // 🔹 Approve a request
   approveRequest(id: number): void {
