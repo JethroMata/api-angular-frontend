@@ -95,6 +95,10 @@ export class AccountService {
   return this.http.get<any[]>(`${environment.apiUrl}/accounts/managers`);
 }
 
+getUnassigned() {
+  return this.http.get<any[]>(`${environment.apiUrl}/accounts/unassigned`);
+}
+
   create(account: Account) {
     return this.http.post(baseUrl, account);
   }

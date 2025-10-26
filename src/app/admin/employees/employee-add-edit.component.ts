@@ -76,21 +76,70 @@ export class EmployeeAddEditComponent implements OnInit {
   // ----------------------------------------
   // loaders that return Promises so we can await them in ngOnInit
   // ----------------------------------------
-  private loadAccounts(): Promise<void> {
-    return new Promise(resolve => {
-      this.accountService.getAll().pipe(first()).subscribe({
+ private loadAccounts(): Promise<void> {
+  return new Promise(resolve => {
+    // ✅ Add mode: only show unassigned accounts
+    if (this.isAddMode) {
+      this.accountService.getUnassigned().pipe(first()).subscribe({
         next: data => {
           this.accounts = data || [];
           resolve();
         },
         error: err => {
-          console.error('loadAccounts error', err);
+          console.error('loadAccounts error (add mode)', err);
           this.accounts = [];
           resolve();
         }
       });
+      return;
+    }
+
+    // ✅ Edit mode: load unassigned + include employee’s own account
+    this.employeeService.getById(this.EmployeeID!).pipe(first()).subscribe({
+      next: emp => {
+        const currentAccountId =
+          emp.accountId ??
+          emp.accountId ??
+          emp.Account?.id ??
+          emp.Account?.id ??
+          null;
+
+        // Step 1: load unassigned accounts
+        this.accountService.getUnassigned().pipe(first()).subscribe({
+          next: accounts => {
+            this.accounts = accounts || [];
+
+            // Step 2: include the employee’s current account if missing
+            if (currentAccountId && !this.accounts.some(a => a.id === currentAccountId)) {
+              const currentAccount = {
+                id: currentAccountId,
+                email: emp.Account?.email ?? emp.Account?.email ?? '(current account)',
+                firstName: emp.Account?.firstName ?? emp.Account?.firstName ?? '',
+                lastName: emp.Account?.lastName ?? emp.Account?.lastName ?? ''
+              };
+              this.accounts.push(currentAccount);
+            }
+
+            // ✅ Step 3: patch to select current account automatically
+            this.form.patchValue({ accountId: currentAccountId });
+            resolve();
+          },
+          error: err => {
+            console.error('loadAccounts error (edit mode)', err);
+            this.accounts = [];
+            resolve();
+          }
+        });
+      },
+      error: err => {
+        console.error('employee fetch for edit error', err);
+        resolve();
+      }
     });
-  }
+  });
+}
+
+
 
   private loadDepartments(): Promise<void> {
     return new Promise(resolve => {
@@ -127,54 +176,40 @@ export class EmployeeAddEditComponent implements OnInit {
   // ----------------------------------------
   // load employee and patch the form (robust mapping)
   // ----------------------------------------
-  private loadEmployeeAndPatch(): void {
-    if (!this.EmployeeID) return;
-    this.loading = true;
-    console.log('[loadEmployee] id=', this.EmployeeID);
+ private loadEmployeeAndPatch(): void {
+  if (!this.EmployeeID) return;
+  this.loading = true;
 
-    this.employeeService.getById(this.EmployeeID).pipe(first()).subscribe({
-      next: (emp: any) => {
-        console.log('[loadEmployee] raw employee:', emp);
+  this.employeeService.getById(this.EmployeeID).pipe(first()).subscribe({
+    next: (emp: any) => {
+      const deptCandidate =
+        emp.departmentId ??
+        emp.department_id ??
+        emp.department?.id ??
+        emp.Department?.id ??
+        '';
 
-        // Map department -> try several shapes your backend might return
-        const deptCandidate =
-          emp.departmentId ??
-          emp.department_id ??
-          (emp.department && (emp.department.id ?? emp.department.departmentId)) ??
-          (emp.Department && (emp.Department.id ?? emp.Department.departmentId)) ??
-          '';
+      const mapped = {
+        accountId: emp.accountId ?? emp.AccountID ?? emp.account?.id ?? emp.Account?.id ?? '',
+        departmentId: deptCandidate,
+        position: emp.position ?? emp.Position ?? emp.roleType ?? '',
+        headId: emp.headId ?? emp.HeadID ?? emp.head?.employeeId ?? emp.Head?.EmployeeID ?? null,
+        hireDate: (emp.hireDate ?? emp.HireDate ?? '')?.substring(0, 10) ?? '',
+        status: emp.status ?? emp.Status ?? 'active'
+      };
 
-        // Map other fields similarly (position/hireDate/status/headId)
-        const mapped = {
-          accountId: emp.accountId ?? emp.AccountID ?? emp.account?.id ?? emp.Account?.id ?? '',
-          departmentId: deptCandidate,
-          position: emp.position ?? emp.Position ?? emp.roleType ?? '',
-          headId: emp.headId ?? emp.HeadID ?? emp.head?.employeeId ?? emp.Head?.EmployeeID ?? null,
-          hireDate: (emp.hireDate ?? emp.HireDate ?? '')?.substring(0, 10) ?? '',
-          status: emp.status ?? emp.Status ?? 'active'
-        };
+      this.form.patchValue(mapped);
+      this.updateHeadVisibility(mapped.position);
+      this.loading = false;
+    },
+    error: err => {
+      console.error('[loadEmployee] error', err);
+      this.loading = false;
+    }
+  });
+}
 
-        console.log('[loadEmployee] mapped values to patch:', mapped);
 
-        // Patch the form - since departments list is already loaded, the department select will match
-        this.form.patchValue(mapped);
-
-        // Ensure head visibility and manager list loaded if needed
-        this.updateHeadVisibility(mapped.position);
-
-        // small delay, then inspect validity / values
-        setTimeout(() => {
-          console.log('[loadEmployee] form after patch:', this.form.value, 'valid=', this.form.valid);
-        }, 50);
-
-        this.loading = false;
-      },
-      error: err => {
-        console.error('[loadEmployee] error', err);
-        this.loading = false;
-      }
-    });
-  }
 
   // ----------------------------------------
   // head visibility: hide only when position is 'manager' (case-insensitive)
